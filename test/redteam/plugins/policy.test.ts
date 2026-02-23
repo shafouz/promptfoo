@@ -130,16 +130,16 @@ describe('PolicyViolationGrader', () => {
       hasPolicy: grader.rubric.includes('<policy>'),
       hasUserQuery: grader.rubric.includes('<UserQuery>'),
       hasPromptVariable: grader.rubric.includes('{{prompt}}'),
-      hasEvaluationCriteria: grader.rubric.includes('Evaluation criteria:'),
-      hasAntiHallucinationRules: grader.rubric.includes('Anti-hallucination rules:'),
+      hasPassCriteria: grader.rubric.includes('PASS (score = 1):'),
+      hasFailCriteria: grader.rubric.includes('FAIL (score = 0):'),
     }).toEqual({
       id: 'promptfoo:redteam:policy',
       hasPurpose: true,
       hasPolicy: true,
       hasUserQuery: true,
       hasPromptVariable: true,
-      hasEvaluationCriteria: true,
-      hasAntiHallucinationRules: true,
+      hasPassCriteria: true,
+      hasFailCriteria: true,
     });
   });
 
