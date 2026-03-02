@@ -126,6 +126,12 @@ export interface ClaudeCodeOptions {
   apiKey?: string;
 
   /**
+   * When true, skips the API key requirement and relies on OAuth credentials
+   * stored by 'claude login'. The underlying CLI handles auth automatically.
+   */
+  use_oauth?: boolean;
+
+  /**
    * 'working_dir' allows user to point to a pre-prepared directory with desired files/directories in place
    * If not supplied, we'll use an empty temp dir for isolation
    */
@@ -664,10 +670,22 @@ export class ClaudeCodeSDKProvider implements ApiProvider {
       env.ANTHROPIC_API_KEY = this.apiKey;
     }
 
+    // When using OAuth, clear the API key so the CLI uses stored OAuth credentials
+    if (config.use_oauth) {
+      delete env.ANTHROPIC_API_KEY;
+    }
+
     // Could potentially do more to validate credentials for Bedrock/Vertex here, but Anthropic key is the main use case
-    if (!this.apiKey && !(env.CLAUDE_CODE_USE_BEDROCK || env.CLAUDE_CODE_USE_VERTEX)) {
+    if (
+      !this.apiKey &&
+      !config.use_oauth &&
+      !(env.CLAUDE_CODE_USE_BEDROCK || env.CLAUDE_CODE_USE_VERTEX)
+    ) {
       throw new Error(
         dedent`Anthropic API key is not set. Set the ANTHROPIC_API_KEY environment variable or add "apiKey" to the provider config.
+
+        Alternatively, use OAuth authentication by setting "use_oauth: true" in your provider config
+        after authenticating with "claude login".
 
         Use CLAUDE_CODE_USE_BEDROCK or CLAUDE_CODE_USE_VERTEX environment variables to use Bedrock or Vertex instead.`,
       );
