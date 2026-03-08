@@ -1,0 +1,17 @@
+providers:
+    - id: anthropic:claude-agent-sdk
+      config:
+        use_oauth: true
+        tools: [Bash]
+        permission_mode: acceptEdits
+        append_allowed_tools: [Bash]
+
+prompts:
+  - "List the files in the current directory"
+
+tests:
+  - assert:
+      - type: javascript
+        value: |
+          const toolCalls = context.providerResponse?.metadata?.toolCalls || [];
+          return toolCalls.some(t => t.name === 'Bash');

@@ -1030,6 +1030,10 @@ export class ClaudeCodeSDKProvider implements ApiProvider {
     return this.config?.apiKey || this.env?.ANTHROPIC_API_KEY || getEnvString('ANTHROPIC_API_KEY');
   }
 
+  requiresApiKey(): boolean {
+    return !this.config?.use_oauth;
+  }
+
   async cleanup(): Promise<void> {
     // no cleanup needed
   }
